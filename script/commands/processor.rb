@@ -7,6 +7,8 @@
 
 =begin
 --- processor:class
+{generator:header}
+
 class %class_name% < Ream::Blog::TemplateProcessor
   def process( value )
 ~    # TODO: process value somehow
@@ -32,7 +34,7 @@ class Processor
   end
 
   def perform
-    tpl = Ream::Template.scan
+    tpl = Ream::Template.scan( __FILE__, File.join( File.dirname( __FILE__ ), "generator.rb" ) )
     new_file( File.join( BASE_DIR, "#{@name}.rb" ) ) do |f|
       f.write( tpl[ 'processor:class', params ] )
     end
@@ -41,7 +43,8 @@ class Processor
 protected
 
   def params
-    { 'class_name' => class_name
+    { 'class_name' => class_name,
+      'creation_date' => Time.now.strftime( '%Y.%m.%d' )
     }
   end
 end
