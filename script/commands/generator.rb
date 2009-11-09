@@ -1,4 +1,10 @@
+#===============================================================
+# Generator: Generator
+#   Created: 2009.11.09
 #
+#     Brief: Is used to create another generator
+#===============================================================
+
 require 'ream/template'
 require 'fileutils'
 
@@ -57,7 +63,7 @@ end
 module Utils
 protected
   def debug( msg, &block )
-    if $VERBOSE
+    if verbose
       if block_given?
         print "[DEBUG] #{msg}.."
         begin
@@ -81,6 +87,19 @@ protected
     puts "[WARN ] #{msg}"
   end
 
+  # Flags
+  #
+  def verbose
+    @args.include?( "--verbose" )
+  end
+  
+  def force
+    @args.include?( "--force" )
+  end
+
+
+  # Disk operations
+  #
   def new_file( name, &block )
     if !File.exist?( name ) || force
       dir = File.dirname( name )
@@ -111,76 +130,36 @@ protected
     } * ""
   end
 
-  def write_require( f, *filenames )
-    filenames.each do |name|
-      f.puts( "require \"#{name}\"" )
-    end
-    f.puts
-  end
-
-  def write_class( f, class_name, &block )
-    f.puts( "class #{class_name}" )
-    block.call if block_given?
-    f.puts( "end" )
-  end
-
-  def write_include( f, module_name )
-    f.puts
-    f.puts( "  include #{module_name}" )
-  end
-
-  def write_run( f, class_name )
-    f.puts
-    f.puts( "#{class_name}.new( ARGV ).perform" )
-  end
-  
-  def force
-    @args.include?( "--force" )
-  end
-end
-
-class Generator
-  include Utils
-
-  def initialize( args )
-    @args = args
-    @name = args.first
-  end
-
-  def perform
-    $VERBOSE = true
-
-    tpl = Ream::Template.scan
-    new_file( "script/commands/#{@name}.rb" ) do |f|
-      f.write( tpl[ 'generator:file', params ] )
-    end
-  end
-
-protected
-
   def class_name
-    @class_name ||= capitalize( @name )
-  end
-
-  def write_initialize( f )
-    f.puts
-    f.puts( "  def initialize( args )" )
-    f.puts( "    @args = args" )
-    f.puts( "  end" )
-  end
-
-  def write_perform( f )
-    f.puts
-    f.puts( "  def perform" )
-    f.puts( "  end" )
-  end
-
-  def params
-    params = {
-      "class_name" => class_name,
-      "creation_date" => Time.now.strftime( "%Y.%m.%d" )
-    }
+    capitalize( @name )
   end
 end
 
-Generator.new( ARGV ).perform unless $REQUIRE
+unless $REQUIRE
+  class Generator
+    include Utils
+
+    def initialize( args )
+      @args = args
+      @name = args.first
+    end
+
+    def perform
+      tpl = Ream::Template.scan
+      new_file( "script/commands/#{@name}.rb" ) do |f|
+        f.write( tpl[ 'generator:file', params ] )
+      end
+    end
+
+    protected
+
+    def params
+      params = {
+        "class_name" => class_name,
+        "creation_date" => Time.now.strftime( "%Y.%m.%d" )
+      }
+    end
+  end
+
+  Generator.new( ARGV ).perform
+end
