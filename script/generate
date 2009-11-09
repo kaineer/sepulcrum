@@ -1,0 +1,11 @@
+#!/usr/bin/ruby
+# $VERBOSE = true
+basedir = File.dirname( __FILE__ )
+command = ARGV.shift
+puts "script/generate #{command}" if $VERBOSE
+filename =  File.join( basedir, "commands", "#{command}.rb" )
+if File.exist?( filename )
+  require filename
+else
+  puts "Command #{command} not found."
+end
