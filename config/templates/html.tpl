@@ -14,7 +14,7 @@
 </head>
 --- html:style:inline
   <style type="text/css">
-%content%
+%contents%
   </style>
 --- html:style:link
   <link rel="stylesheet" href="%stylesheet%" type="text/css" />
@@ -23,5 +23,6 @@
   <meta http-equiv="Content-Language" content="ru" />
 --- html:body
 <body>
+%contents%
 </body>
 ---

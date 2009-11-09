@@ -23,6 +23,8 @@ require 'fileutils'
 class Template
   include Utils
 
+  BASE_DIR = "config/templates/"
+
   def initialize( args )
     @args = args
     @name = @args.first
@@ -30,7 +32,7 @@ class Template
 
   def perform
     tpl = Ream::Template.scan
-    new_file( "templates/#{@name}.tpl" ) do |f|
+    new_file( "#{BASE_DIR}#{@name}.tpl" ) do |f|
       f.write( tpl[ "template:content" ] )
     end
   end

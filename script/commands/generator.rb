@@ -131,7 +131,9 @@ protected
   end
 
   def class_name
-    capitalize( @name )
+    @name.split( /[\\\/]/ ).map{|s|
+      capitalize( s )
+    } * "::"
   end
 end
 
