@@ -1,0 +1,8 @@
+--- page:environment
+title: something-to-start-with
+date: 2009.11.10
+tags: ### TODO: place your tags here
+templates: [blog_page]
+--- page:content
+### TODO: Place your content here
+---

@@ -5,6 +5,8 @@
 #     Brief: Creating template processorc
 #===============================================================
 
+require File.join( File.dirname( __FILE__ ), "generator/utils" )
+
 =begin
 --- processor:class
 {generator:header}
@@ -16,12 +18,6 @@ class %class_name% < Ream::Blog::TemplateProcessor
 end
 ---
 =end
-
-$REQUIRE = true
-require File.join( File.dirname( __FILE__ ), "generator" )
-$REQUIRE = nil
-require 'ream/template'
-require 'fileutils'
 
 class Processor
   include Utils

@@ -5,20 +5,15 @@
 #     Brief: Is used to create another generator
 #===============================================================
 
-require 'ream/template'
-require 'fileutils'
+require File.join( File.dirname( __FILE__ ), "generator/utils" )
 
 =begin
 --- generator:file
 {generator:header}
 
-{generator:templates}
+require File.join( File.dirname( __FILE__ ), "generator/utils" )
 
-$REQUIRE = true
-require File.join( File.dirname( __FILE__ ), "generator" )
-$REQUIRE = nil
-require 'ream/template'
-require 'fileutils'
+{generator:templates}
 
 {generator:class}
 
@@ -60,108 +55,29 @@ end
 ---
 =end
 
-module Utils
-protected
-  def debug( msg, &block )
-    if verbose
-      if block_given?
-        print "[DEBUG] #{msg}.."
-        begin
-          block.call
-        rescue Exception => e
-          puts "failed!"
-          puts "[ERROR] e.message"
-          puts e.backtrace * $/
-        else
-          puts "ok."
-        end
-      else
-        puts "[DEBUG] #{msg}"
-      end
-    else
-      block.call if block_given?
+class Generator
+  include Utils
+
+  def initialize( args )
+    @args = args
+    @name = args.first
+  end
+
+  def perform
+    tpl = Ream::Template.scan
+    new_file( "script/commands/generate/#{@name}.rb" ) do |f|
+      f.write( tpl[ 'generator:file', params ] )
     end
   end
 
-  def warning( msg )
-    puts "[WARN ] #{msg}"
-  end
+  protected
 
-  # Flags
-  #
-  def verbose
-    @args.include?( "--verbose" )
-  end
-  
-  def force
-    @args.include?( "--force" )
-  end
-
-
-  # Disk operations
-  #
-  def new_file( name, &block )
-    if !File.exist?( name ) || force
-      dir = File.dirname( name )
-      create_dir( dir )
-      debug( "#{name} creating" ) {||
-        f = File.new( name, "w" )
-        block.call( f )
-        f.close
-      }
-    else
-      warning( "#{name} already exist. Try to remove manually, or use `--force' option" )
-    end
-  end
-
-  def create_dir( dir )
-    if File.exist?( dir )
-      debug( "#{dir} - directory exist." )
-    else
-      debug( "#{dir} - creating directory" ) {||
-        FileUtils.mkdir_p( dir )
-      }
-    end
-  end
-
-  def capitalize( string )
-    string.split( "_" ).map{|s|
-      s[0, 1].upcase + s[1..-1].downcase
-    } * ""
-  end
-
-  def class_name
-    @name.split( /[\\\/]/ ).map{|s|
-      capitalize( s )
-    } * "::"
+  def params
+    params = {
+      "class_name" => class_name,
+      "creation_date" => Time.now.strftime( "%Y.%m.%d" )
+    }
   end
 end
 
-unless $REQUIRE
-  class Generator
-    include Utils
-
-    def initialize( args )
-      @args = args
-      @name = args.first
-    end
-
-    def perform
-      tpl = Ream::Template.scan
-      new_file( "script/commands/generate/#{@name}.rb" ) do |f|
-        f.write( tpl[ 'generator:file', params ] )
-      end
-    end
-
-    protected
-
-    def params
-      params = {
-        "class_name" => class_name,
-        "creation_date" => Time.now.strftime( "%Y.%m.%d" )
-      }
-    end
-  end
-
-  Generator.new( ARGV ).perform
-end
+Generator.new( ARGV ).perform

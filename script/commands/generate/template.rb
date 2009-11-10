@@ -5,6 +5,8 @@
 #     Brief: Create design template
 #===============================================================
 
+require File.join( File.dirname( __FILE__ ), "generator/utils" )
+
 =begin
 --- template:content
 ~--- template:name.1
@@ -12,13 +14,6 @@
 ~---
 ---
 =end
-
-$REQUIRE = true
-require File.join( File.dirname( __FILE__ ), "generator" )
-$REQUIRE = nil
-
-require 'ream/template'
-require 'fileutils'
 
 class Template
   include Utils
