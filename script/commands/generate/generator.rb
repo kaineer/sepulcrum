@@ -148,7 +148,7 @@ unless $REQUIRE
 
     def perform
       tpl = Ream::Template.scan
-      new_file( "script/commands/#{@name}.rb" ) do |f|
+      new_file( "script/commands/generate/#{@name}.rb" ) do |f|
         f.write( tpl[ 'generator:file', params ] )
       end
     end
