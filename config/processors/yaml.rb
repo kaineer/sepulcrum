@@ -7,8 +7,9 @@
 
 require 'yaml'
 
+module TP
 class Yaml < Ream::Blog::TemplateProcessor
-  def process( value )
+  def self.process( value )
     begin
       YAML.load( value )
     rescue Exception => e
@@ -18,4 +19,5 @@ class Yaml < Ream::Blog::TemplateProcessor
       e.message
     end
   end
+end
 end

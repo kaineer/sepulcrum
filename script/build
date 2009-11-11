@@ -1,0 +1,43 @@
+#!/usr/bin/ruby
+
+$:.unshift( "." )
+$:.unshift( "lib" )
+
+require 'rubygems'
+require "script/lib/utils"
+
+require 'ream/sources/fs'
+require 'ream/blog/template_cache__'
+require 'ream/blog/template_processor'
+
+include Utils::Log
+
+basedir = Dir.pwd
+
+BLOG_DIR = "pages/blog"
+TEMPLATES_DIR = "config/templates"
+PROCESSORS_DIR = "config/processors"
+
+### TODO: Some actions to do
+def file_source( dir, mask )
+  Ream::Sources::FS.new( dir, mask )
+end
+
+def load_template_processors
+  info( "load_template_processors" )
+  Dir[ "#{PROCESSORS_DIR}/**/*.rb" ].each do |filename|
+    debug( "Filename: #{filename}" )
+    require filename unless File.directory?( filename )
+  end
+end
+
+load_template_processors
+
+templates_source = file_source( TEMPLATES_DIR, "**/*.tpl" )
+pages_source = file_source( BLOG_DIR, "*.txt" )
+
+tc = Ream::Blog::TemplateCache.new( templates_source )
+# info( tc.fetch( 'html.tpl', 'blog_page.tpl' )[ 'html:doctype' ] )
+config = tc.fetch( 'blog_page.tpl' )[ 'environment' ]
+# puts tc.inspect
+puts config.inspect

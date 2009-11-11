@@ -5,6 +5,8 @@
 #     Brief: Is used from generators for generic operations
 #===============================================================
 
+$:.unshift( "lib" )
+
 require 'fileutils'
 require 'ream/template'
 

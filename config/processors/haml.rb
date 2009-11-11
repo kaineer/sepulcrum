@@ -22,10 +22,11 @@
 
 require 'haml'
 
+module TP
 class Haml < Ream::Blog::TemplateProcessor
-  def process( value )
+  def self.process( value )
     begin
-      Haml::Engine.new( value ).render
+      ::Haml::Engine.new( value ).render
     rescue Exception => e
       puts "[ERROR] #{e.message}"
       puts e.backtrace.map{|s|"  * #{s}"} * $/
@@ -33,4 +34,5 @@ class Haml < Ream::Blog::TemplateProcessor
       e.message
     end
   end
+end
 end

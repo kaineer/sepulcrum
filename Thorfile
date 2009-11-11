@@ -6,6 +6,7 @@ $:.unshift( "lib" )
 
 require 'ream/sources/fs'
 require 'ream/blog/template_cache__'
+require 'ream/blog/template_processor'
 
 module LogUtils
   RED       = "\e[31m"
@@ -125,7 +126,7 @@ class Blog < Thor
 
     def load_template_processors
       info( "load_template_processors" )
-      Dir[ File.join( PROCESSORS_DIR ), "*.rb" ].each do |filename|
+      Dir[ "#{PROCESSORS_DIR}/**/*.rb" ].each do |filename|
         debug( "Filename: #{filename}" )
         require filename unless File.directory?( filename )
       end
@@ -140,6 +141,10 @@ class Blog < Thor
     pages_source = file_source( BLOG_DIR, "*.txt" )
 
     tc = Ream::Blog::TemplateCache.new( templates_source )
-    info( tc.fetch( 'html.tpl', 'blog_page.tpl' )[ 'html:doctype' ] )
+    # info( tc.fetch( 'html.tpl', 'blog_page.tpl' )[ 'html:doctype' ] )
+    config = tc.fetch( 'blog_page.tpl' )[ 'environment' ]
+    # puts tc.inspect
+    puts config.inspect
+    # puts Ream::Blog::TemplateProcessor.inspect
   end
 end
