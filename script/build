@@ -38,6 +38,11 @@ pages_source = file_source( BLOG_DIR, "*.txt" )
 
 tc = Ream::Blog::TemplateCache.new( templates_source )
 # info( tc.fetch( 'html.tpl', 'blog_page.tpl' )[ 'html:doctype' ] )
-config = tc.fetch( 'blog_page.tpl' )[ 'environment' ]
+# config = tc.fetch( 'blog_page.tpl' )[ 'environment' ]
 # puts tc.inspect
-puts config.inspect
+# puts config.inspect
+
+page = tc.fetch( 'blog_page.tpl' )[ 'html.content' ]
+puts page
+
+debug( 'ok.' )

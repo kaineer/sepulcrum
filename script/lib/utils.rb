@@ -26,9 +26,13 @@ module Utils
   end
 
   module Log
+    def timestamp
+      Time.now.strftime( "%Y.%m.%d -- %H:%M:%S" )
+    end
+
     def log( level, message, color )
-      puts "[%s%-5s%s] %s" % 
-        [ color, level.upcase, Utils::Colors::RESET, message ]
+      puts "%s [%s%-5s%s] %s" % 
+        [ timestamp, color, level.upcase, Utils::Colors::RESET, message ]
     end
 
     def error( message )

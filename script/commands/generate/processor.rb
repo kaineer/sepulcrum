@@ -11,9 +11,18 @@ require File.join( File.dirname( __FILE__ ), "generator/utils" )
 --- processor:class
 {generator:header}
 
-class %class_name% < Ream::Blog::TemplateProcessor
-  def process( value )
-~    # TODO: process value somehow
+module TemplateProcessor
+  class %class_name% < Ream::Blog::TemplateProcessor
+    def self.process( value )
+      begin
+~        # TODO: process value somehow
+      rescue Exception => e
+        puts "[ERROR] #{e.message}"
+        puts e.backtrace.map{|s|" * #{s}"} * $/
+
+        e.message
+      end
+    end
   end
 end
 ---

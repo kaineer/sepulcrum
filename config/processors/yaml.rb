@@ -1,23 +1,23 @@
 #===============================================================
 # Generator: Yaml
-#   Created: 2009.11.10
+#   Created: 2009.11.12
 #
-#     Brief: Get yaml data from text
+#     Brief: TODO
 #===============================================================
 
 require 'yaml'
 
-module TP
-class Yaml < Ream::Blog::TemplateProcessor
-  def self.process( value )
-    begin
-      YAML.load( value )
-    rescue Exception => e
-      puts "[ERROR] #{e.message}"
-      puts e.backtrace.map{|s|"  * #{s}"} * $/
+module TemplateProcessor
+  class Yaml < Ream::Blog::TemplateProcessor
+    def self.process( value )
+      begin
+        ::YAML.load( value )
+      rescue Exception => e
+        puts "[ERROR] #{e.message}"
+        puts e.backtrace.map{|s|" * #{s}"} * $/
 
-      e.message
+        e.message
+      end
     end
   end
-end
 end
