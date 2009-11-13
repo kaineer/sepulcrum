@@ -5,6 +5,7 @@ stylesheets: [blueprint/screen, custom/screen]
   .header
   .middle_part
     .content_here
+      \%content%
     .side_bar
   .footer
 ---

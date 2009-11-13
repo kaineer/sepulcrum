@@ -11,7 +11,7 @@ module TemplateProcessor
   class Haml < Ream::Blog::TemplateProcessor
     def self.process( value )
       begin
-        ::Haml::Engine.new( value ).render
+        ::Haml::Engine.new( value, :ugly => true ).render
       rescue Exception => e
         puts "[ERROR] #{e.message}"
         puts e.backtrace.map{|s|" * #{s}"} * $/

@@ -1,8 +1,14 @@
+--- yaml:parameters
+title: foo-bar
 --- page:environment
 title: something-to-start-with
 date: 2009.11.10
 tags: ### TODO: place your tags here
 templates: [blog_page]
 --- page:content
-### TODO: Place your content here
+<p>This is some content to look for</p>
+{second:paragraph}
+--- haml:second:paragraph
+%p
+  second paragraph under haml
 ---

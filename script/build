@@ -4,45 +4,150 @@ $:.unshift( "." )
 $:.unshift( "lib" )
 
 require 'rubygems'
+require 'yaml'
 require "script/lib/utils"
 
 require 'ream/sources/fs'
 require 'ream/blog/template_cache__'
 require 'ream/blog/template_processor'
+require 'ream/blog/overrides/string'
 
 include Utils::Log
 
-basedir = Dir.pwd
 
-BLOG_DIR = "pages/blog"
-TEMPLATES_DIR = "config/templates"
-PROCESSORS_DIR = "config/processors"
+module Sepulcrum
+  class Build
+    
+    class SourceHash
+      def initialize( obj )
+        case obj
+        when Hash then init_with_hash( obj )
+        when String then init_with_hash( YAML.load( obj ) )
+        end
+      end
 
-### TODO: Some actions to do
-def file_source( dir, mask )
-  Ream::Sources::FS.new( dir, mask )
-end
+      def init_with_hash( hash )
+        @root = hash[ "root" ]
+        @mask = hash[ "mask" ]
+        @map  = hash[ "map" ]
+      end
 
-def load_template_processors
-  info( "load_template_processors" )
-  Dir[ "#{PROCESSORS_DIR}/**/*.rb" ].each do |filename|
-    debug( "Filename: #{filename}" )
-    require filename unless File.directory?( filename )
+      attr_reader :root, :mask, :map
+
+      def wildcard
+        File.join( root, mask )
+      end
+    end
+
+
+    include Utils::Log
+
+    def initialize
+      load_template_processors
+    end
+
+    def templates
+      @templates ||= cache( "templates.source" )
+    end
+
+    def pages
+      @pages ||= cache( "pages.source" )
+    end
+
+  protected
+
+    def sources_config
+      @sources_config ||= Ream::Template.scan( "config/sources.tpl" )
+    end
+
+    def processors_mask
+      SourceHash.
+        new( sources_config[ "yaml:processors.source" ] ).wildcard
+    end
+
+    def load_template_processors
+      info( "load_template_processors" )
+
+      Dir[ processors_mask ].each do |filename|
+        debug( "Template processor: #{filename}" )
+        require filename unless File.directory?( filename )
+      end
+      @expanded_build_config = nil
+    end
+
+    def expanded_build_config
+      @expanded_build_config ||= sources_config.with( Ream::Blog::TemplateProcessor )
+    end
+
+    def source( template_name )
+      hash = SourceHash.new( expanded_build_config[ template_name ] )
+      Ream::Sources::FS.new( hash.root, hash.mask )
+    end
+
+    def cache( template_name )
+      Ream::Blog::TemplateCache.new( source( template_name ) )
+    end
   end
 end
 
-load_template_processors
+sb = Sepulcrum::Build.new
+tc = sb.templates
 
-templates_source = file_source( TEMPLATES_DIR, "**/*.tpl" )
-pages_source = file_source( BLOG_DIR, "*.txt" )
+debug( "config:" )
+config = tc.fetch( 'blog_page' )[ 'environment' ]
+puts config.to_yaml
 
-tc = Ream::Blog::TemplateCache.new( templates_source )
-# info( tc.fetch( 'html.tpl', 'blog_page.tpl' )[ 'html:doctype' ] )
-# config = tc.fetch( 'blog_page.tpl' )[ 'environment' ]
-# puts tc.inspect
-# puts config.inspect
-
-page = tc.fetch( 'blog_page.tpl' )[ 'html.content' ]
+debug( "blog page layout:" )
+page = tc.fetch( 'blog_page' )[ 'html.content' ]
 puts page
+
+blog_page = tc.fetch( 'blog_page' )
+
+### list pages
+debug( "pages list:" )
+puts sb.pages.to_yaml
+
+sb.pages.each do |path, value|
+  params = value[ 'parameters' ]
+  params = {} unless params.is_a?( Hash )
+
+  styles = blog_page[ 'environment' ][ "stylesheets" ].map{|s|
+    s.path.map( "/stylesheets/%a.css" )
+  }.map{|s| "<link rel='stylesheet' href='#{s}' type='text/css' />"
+  } * $/
+
+  content = blog_page[ 'html.content', 
+                  { "content" => value[ "page:content" ] } ]
+
+  html_page = tc.fetch( 'html' )
+
+  debug( styles )
+  debug( html_page )
+  
+  params[ "contents" ] = content
+  params[ "green:cheese" ] = styles
+
+  debug( params.inspect )
+
+  debug( html_page[ "html:test", params ] )
+
+  # of = File.new( path.path.map( "site/%p/%n.html" ), "w" )
+  # of.write( html_page[ "html:page", params ] )
+  # of.close                    
+end
+
+=begin
+path = sb.pages.files.first
+puts path.path.map( "site/%p/%n.html" )
+
+FileUtils.mkdir_p( path.path.map( "site/%p" ) )
+
+of = File.new( path.path.map( "site/%p/%n.html" ), "w" )
+of.write( tc.fetch( 'blog_page.tpl' )[ 'html.content', 
+                { "content" => IO.read( path.path.map( "pages/%a" ) ) } 
+              ] 
+          )
+of.close
+=end
 
 debug( 'ok.' )
