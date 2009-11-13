@@ -11,7 +11,7 @@
 --- html:head
 <head>
   <title>%title%</title>
-  %green:cheese%
+  %html:stylesheets%
 {html:head:meta.ru}
 </head>
 --- html:style:inline

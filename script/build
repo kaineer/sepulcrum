@@ -111,6 +111,10 @@ sb.pages.each do |path, value|
   params = value[ 'parameters' ]
   params = {} unless params.is_a?( Hash )
 
+  environment = value[ 'environment' ]
+  debug( environment.inspect )
+  blog_page = tc.fetch( *environment[ 'templates' ] )
+
   styles = blog_page[ 'environment' ][ "stylesheets" ].map{|s|
     s.path.map( "/stylesheets/%a.css" )
   }.map{|s| "<link rel='stylesheet' href='#{s}' type='text/css' />"
@@ -125,11 +129,13 @@ sb.pages.each do |path, value|
   debug( html_page )
   
   params[ "contents" ] = content
-  params[ "green:cheese" ] = styles
+  params[ "html:stylesheets" ] = styles
+
+  
 
   debug( params.inspect )
 
-  debug( html_page[ "html:test", params ] )
+  debug( html_page[ "html:page", params ] )
 
   # of = File.new( path.path.map( "site/%p/%n.html" ), "w" )
   # of.write( html_page[ "html:page", params ] )
