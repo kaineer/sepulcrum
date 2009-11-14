@@ -20,7 +20,7 @@ basedir = Dir.pwd
 class Script
   include Utils
 
-  BASE_DIR = "script/"
+  BASE_DIR = "scripts/"
 
   def initialize( args )
     @args = args

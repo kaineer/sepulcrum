@@ -1,14 +1,16 @@
 --- yaml:parameters
-title: foo-bar
---- page:environment
-title: something-to-start-with
+title: Надо же с чего-нибудь начать
 date: 2009.11.10
-tags: ### TODO: place your tags here
+--- yaml:environment
+tags: start
 templates: [blog_page]
---- page:content
-<p>This is some content to look for</p>
-{second:paragraph}
---- haml:second:paragraph
+--- haml:page:content
 %p
-  second paragraph under haml
+  Первый параграф.
+%p
+  Второй параграф
+{some:html}
+--- some:html
+<p>Вот не представляю я как <b>такое</b> представить
+в виде хамл.</p>
 ---

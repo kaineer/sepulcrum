@@ -5,10 +5,10 @@ $:.unshift( "lib" )
 
 require 'rubygems'
 require 'yaml'
-require "script/lib/utils"
+require "scripts/lib/utils"
 
 require 'ream/sources/fs'
-require 'ream/blog/template_cache__'
+require 'ream/blog/template_cache'
 require 'ream/blog/template_processor'
 require 'ream/blog/overrides/string'
 
@@ -54,6 +54,7 @@ module Sepulcrum
       @pages ||= cache( "pages.source" )
     end
 
+
   protected
 
     def sources_config
@@ -72,15 +73,16 @@ module Sepulcrum
         debug( "Template processor: #{filename}" )
         require filename unless File.directory?( filename )
       end
-      @expanded_build_config = nil
     end
 
-    def expanded_build_config
-      @expanded_build_config ||= sources_config.with( Ream::Blog::TemplateProcessor )
+    def expanded_sources_config
+      @expanded_sources_config ||= 
+        sources_config.with( Ream::Blog::TemplateProcessor )
     end
 
     def source( template_name )
-      hash = SourceHash.new( expanded_build_config[ template_name ] )
+      hash = SourceHash.
+        new( expanded_sources_config[ template_name ] )
       Ream::Sources::FS.new( hash.root, hash.mask )
     end
 
@@ -93,67 +95,33 @@ end
 sb = Sepulcrum::Build.new
 tc = sb.templates
 
-debug( "config:" )
-config = tc.fetch( 'blog_page' )[ 'environment' ]
-puts config.to_yaml
-
-debug( "blog page layout:" )
-page = tc.fetch( 'blog_page' )[ 'html.content' ]
-puts page
-
-blog_page = tc.fetch( 'blog_page' )
-
-### list pages
-debug( "pages list:" )
-puts sb.pages.to_yaml
-
 sb.pages.each do |path, value|
   params = value[ 'parameters' ]
   params = {} unless params.is_a?( Hash )
 
   environment = value[ 'environment' ]
-  debug( environment.inspect )
   blog_page = tc.fetch( *environment[ 'templates' ] )
 
   styles = blog_page[ 'environment' ][ "stylesheets" ].map{|s|
     s.path.map( "/stylesheets/%a.css" )
-  }.map{|s| "<link rel='stylesheet' href='#{s}' type='text/css' />"
+  }.map{|s| 
+    "<link rel='stylesheet' href='#{s}' type='text/css' />"
   } * $/
 
   content = blog_page[ 'html.content', 
                   { "content" => value[ "page:content" ] } ]
 
   html_page = tc.fetch( 'html' )
-
-  debug( styles )
-  debug( html_page )
   
   params[ "contents" ] = content
   params[ "html:stylesheets" ] = styles
 
-  
-
-  debug( params.inspect )
-
-  debug( html_page[ "html:page", params ] )
-
-  # of = File.new( path.path.map( "site/%p/%n.html" ), "w" )
-  # of.write( html_page[ "html:page", params ] )
-  # of.close                    
+  string = html_page[ "html:page", params ]
+  info( "#{path} -> #{path.path.map( 'site/%p/%n.html' )}, #{string.size} bytes" )
+  FileUtils.mkdir_p( path.path.map( "site/%p" ) )
+  of = File.new( path.path.map( "site/%p/%n.html" ), "w" )
+  of.write( string )
+  of.close                    
 end
-
-=begin
-path = sb.pages.files.first
-puts path.path.map( "site/%p/%n.html" )
-
-FileUtils.mkdir_p( path.path.map( "site/%p" ) )
-
-of = File.new( path.path.map( "site/%p/%n.html" ), "w" )
-of.write( tc.fetch( 'blog_page.tpl' )[ 'html.content', 
-                { "content" => IO.read( path.path.map( "pages/%a" ) ) } 
-              ] 
-          )
-of.close
-=end
 
 debug( 'ok.' )

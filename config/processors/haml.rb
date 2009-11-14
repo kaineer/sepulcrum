@@ -1,8 +1,8 @@
 #===============================================================
-# Generator: Haml
+# Processor: Haml
 #   Created: 2009.11.12
 #
-#     Brief: TODO
+#     Brief: Transform haml -> html
 #===============================================================
 
 require 'haml'

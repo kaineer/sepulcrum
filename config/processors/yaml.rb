@@ -1,8 +1,8 @@
 #===============================================================
-# Generator: Yaml
+# Processor: Yaml
 #   Created: 2009.11.12
 #
-#     Brief: TODO
+#     Brief: Translate yaml -> data
 #===============================================================
 
 require 'yaml'

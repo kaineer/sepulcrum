@@ -1,3 +1,9 @@
+#
+#
+#
+#
+#
+
 --- yaml:processors.source
 root: "config/processors"
 mask: "**/*.rb"
