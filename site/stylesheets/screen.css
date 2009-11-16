@@ -9,6 +9,10 @@ body, td, th {
     font: 10pt Georgia, Serif;
 }
 
+.hidden {
+    display: none;
+}
+
 .header {
     background: #8fa9ad url('/images/title_bg.gif') no-repeat;
     color: #cccccc;
