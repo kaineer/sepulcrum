@@ -15,9 +15,18 @@
 <head>
 <title>%title%</title>
 {html:meta.ru}
-%stylesheets%
-%javascripts%
+{html:stylesheets}
+{html:javascripts}
+%custom.javascript%
 </head>
+--- html:stylesheets
+<link rel="stylesheet" href="/stylesheets/blueprint/screen.css" type="text/css" media="screen, projection" />
+<link rel="stylesheet" href="/stylesheets/blueprint/print.css" type="text/css" media="print" />
+<!--[if lt IE 8]><link rel="stylesheet" href="/stylesheets/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
+<link rel="stylesheet" href="/stylesheets/screen.css" type="text/css" />
+--- html:javascripts
+<script src="/javascripts/jquery.js" />
 --- html:body
 <body>
 %content%
