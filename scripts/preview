@@ -1,0 +1,21 @@
+#!/usr/bin/ruby
+
+basedir = Dir.pwd
+
+### TODO: Some actions to do
+require 'webrick'
+include WEBrick
+
+def start_webrick(config = {})
+  # always listen on port 2222
+  config.update(:Port => 2222)     
+  server = HTTPServer.new(config)
+  yield server if block_given?
+  ['INT', 'TERM'].each {|signal| 
+    trap(signal) {server.shutdown}
+  }
+  server.start
+
+end
+  
+start_webrick(:DocumentRoot => './site/')
