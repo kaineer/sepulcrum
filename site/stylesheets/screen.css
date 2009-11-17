@@ -33,7 +33,7 @@ body, td, th {
 }
 
 .sidebar .frame {
-    min-height: 800px;
+    min-height: 600px;
     margin-right: 0;
     margin-left: 4px;
 }

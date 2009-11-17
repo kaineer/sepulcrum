@@ -45,6 +45,12 @@ $( document ).ready( function() {
     } );
   } );
 
+  function align_sidebar() {
+    $( '.sidebar .frame' ).css( 'height',
+      $( '#content' ).height() - 14
+    );
+  }
+
   $( ".blog.frame h2" ).live( "click", function() {
     var h2 = $( this );
 
@@ -57,6 +63,8 @@ $( document ).ready( function() {
 	  h2.data( "visible", true );
 	  h2.data( "content", data );
 	  h2.parent().tag( "div" ).append( data );
+
+	  align_sidebar();
 	}
       } );
     } else {
@@ -67,6 +75,8 @@ $( document ).ready( function() {
 	h2.data( "visible", true );
 	h2.parent().find( "div" ).show();
       }
+
+      align_sidebar();    
     }
   } );
 } );
