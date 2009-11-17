@@ -1,0 +1,51 @@
+#!/usr/bin/ruby
+
+module Sepulcrum
+  class Upload
+    def initialize( args )
+      @args = args
+    end
+
+    def perform
+      Dir.chdir( "site" ) do
+        perform0
+      end
+    end
+
+    def perform0
+      if @args.include?( "all" )
+        upload_all
+      else
+        upload_index if @args.include?( "index" )
+        upload_list if @args.include?( "list" )
+        upload_blog if @args.include?( "blog" )
+      end
+    end
+
+    def upload_all
+      upload_index
+      upload_list
+      upload_blog
+    end
+
+    def upload_index
+      upload( "index.html" )
+    end
+
+    def upload_list
+      upload( "list.json" )
+    end
+
+    def upload_blog
+      upload( "blog/*.html" )
+    end
+
+    def upload( mask )
+      Dir[ mask ].each do |filename|
+        system( "scp #{filename} kaineer.info:www/kaineer.info/#{filename}" )
+      end
+    end
+  end
+end
+
+Sepulcrum::Upload.new( ARGV ).perform
