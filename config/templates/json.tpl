@@ -1,0 +1,3 @@
+--- html:page
+%page:content%
+---

@@ -38,6 +38,10 @@ body, td, th {
     margin-left: 4px;
 }
 
+.loading {
+    border: solid 1px #9D9900;
+}
+
 .top-bottom-margin {
     margin-top: 4px;
     margin-bottom: 4px;

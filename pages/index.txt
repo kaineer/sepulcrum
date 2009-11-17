@@ -1,0 +1,5 @@
+--- yaml:environment
+templates: [ index, sidebar ]
+--- page:content
+# Nothing here
+---

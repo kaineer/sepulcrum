@@ -49,7 +49,7 @@ protected
 
   def params
     { 'class_name' => class_name,
-      'creation_date' => Time.now.strftime( '%Y.%m.%d' )
+      'creation_date' => self.timestamp
     }
   end
 end
