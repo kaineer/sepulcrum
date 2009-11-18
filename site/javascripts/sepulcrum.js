@@ -52,12 +52,23 @@ $( document ).ready( function() {
       }
 
       align_sidebar();    
+
+      return false;
     }
 
-    $( ".hierarchy .title" ).click( function() {
-      // alert( "click" );
-      $( this ).next( ".container" ).toggle();
-      return false;
-    } );
+  } );
+
+  $( ".hierarchy .title" ).click( function() {
+    var $container = $( this ).next( ".container" );
+
+    if( $container && $container.length > 0 && $container.css( "display" ) != "none" ) {
+      $( this ).tag( "span", " ..." );
+    } else {
+      $( this ).find( "span" ).remove();
+    }
+
+    $container.toggle();
+
+    return false;
   } );
 } );

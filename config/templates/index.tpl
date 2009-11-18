@@ -25,7 +25,6 @@
         .span-18.top-bottom-margin#content
         .span-6.last.top-bottom-margin.sidebar
           .last.frame
-            %h2 О себе
             \{about:me}
       .span-24.footer.last
         .frame

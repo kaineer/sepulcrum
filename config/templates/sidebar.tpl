@@ -1,19 +1,20 @@
 --- hierarchy:about:me
-- nick: kaineer
-- languages:
-  - 'русский': 'разговариваю'
-  - english: 'can speak and write'
-  - '日本語': 'すこし分かります'
-- programming:
-  - "at work":
-    - "ruby+rails"
-    - sql
-    - html+css+js
-  - easily:
-    - c
-    - cpp
-  - "will code for bread":
-    - xslt
-    - pascal
-    - "name yours"
+- "О себе":
+  - "псевдоним": kaineer
+  - "языки":
+    - 'русский': 'разговариваю'
+    - english: 'can speak and write'
+    - '日本語': 'すこし分かります'
+  - "программирую":
+    - "по работе":
+      - "ruby+rails"
+      - sql
+      - html+css+js
+    - "отлично владею":
+      - c
+      - cpp
+    - "если будет нужно":
+      - xslt
+      - pascal
+      - "name yours"
 ---
