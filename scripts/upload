@@ -19,6 +19,7 @@ module Sepulcrum
         upload_index if @args.include?( "index" )
         upload_list if @args.include?( "list" )
         upload_blog if @args.include?( "blog" )
+        upload_rest
       end
     end
 
@@ -40,9 +41,14 @@ module Sepulcrum
       upload( "blog/*.html" )
     end
 
+    def upload_rest
+      rest = @args - %w( all index list blog )
+      rest.each{|fn| upload( fn )}
+    end
+
     def upload( mask )
       Dir[ mask ].each do |filename|
-        system( "scp #{filename} kaineer.info:www/kaineer.info/#{filename}" )
+        system( "scp #{filename} kaineer@kaineer.info:www/kaineer.info/#{filename}" )
       end
     end
   end

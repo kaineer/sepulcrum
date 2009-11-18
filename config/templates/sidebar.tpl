@@ -1,25 +1,19 @@
---- about:me
-{ nick: 'kaineer',
-  languages: {
-    русский: 'разговариваю',
-    english: 'can speak and write',
-    日本語: 'すこし分かります'
-  },
-  programming: {
-    use_at_work: [ 
-      ruby+rails, 
-      sql, 
-      html+css+js
-    ],
-    can_use_easily: [
-      c, cpp
-    ],
-    will_code_for_bread: [
-      xslt,
-      pascal,
-      ObjC,
-      NameYours
-    ]
-  }
-}
+--- hierarchy:about:me
+- nick: kaineer
+- languages:
+  - 'русский': 'разговариваю'
+  - english: 'can speak and write'
+  - '日本語': 'すこし分かります'
+- programming:
+  - "at work":
+    - "ruby+rails"
+    - sql
+    - html+css+js
+  - easily:
+    - c
+    - cpp
+  - "will code for bread":
+    - xslt
+    - pascal
+    - "name yours"
 ---

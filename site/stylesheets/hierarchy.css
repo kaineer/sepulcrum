@@ -1,0 +1,17 @@
+.hierarchy .title {
+    float: left;
+    clear: left;
+    /* background-color: #92A5D2; */
+    color: #92A5D2;
+    padding-right: 4px;
+}
+.hierarchy .value {
+/* padding-left: 10px; */
+}
+.container {
+    padding: 2px;
+    clear: both;
+}
+.container .container {
+    margin-left: 8px;
+}
