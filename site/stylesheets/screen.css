@@ -47,6 +47,10 @@ body, td, th {
     margin-bottom: 4px;
 }
 
+.blog.frame h2 {
+  cursor: pointer;
+}
+
 h2 {
     font: normal 11pt tahoma, arial, sans-serif;
     background-color: #ffffff;
