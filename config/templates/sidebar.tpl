@@ -14,7 +14,8 @@
       - c
       - cpp
     - "если будет нужно":
-      - xslt
+      - java
       - pascal
+      - xslt
       - "name yours"
 ---

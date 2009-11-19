@@ -1,0 +1,42 @@
+--- yaml:parameters
+title: "Привет, ультрафиолет"
+date: 2009.11.19
+--- yaml:environment
+tags: [hello]
+templates: [empty]
+--- haml:page:content
+%p
+  <a href="http://ultraviolet.rubyforge.org">Ultraviolet</a> - 
+  пакет, помогающий преобразовать plain-text 
+  код в "подсвеченный" вид. Главное, что у него есть -
+  большое число поддерживаемых синтаксисов
+  (в частности порадовал синтаксис jquery_javascript).
+
+%p
+  Самый неприятный минус - низкая скорость обработки.
+  Для статического сайта вполне сойдёт, но для обработки
+  "на лету" будет хреново.
+
+%h3 Слайды
+
+%p Пример кода на Ruby:
+\{source:sample.ruby}
+
+%p Пример кода на OCaml:
+\{source:sample.ocaml}
+
+%p 
+  Тормозит безбожно. 
+  Лишний повод задуматься об инкрементной 
+  обработке страниц.
+--- ruby:source:sample.ruby
+class Hello
+  def greet( whom )
+    puts "#{self.class.name}, #{whom}!"
+  end
+end
+
+Hello.new.greet( "ultraviolet" )
+--- ocaml:source:sample.ocaml
+Printf.printf "Hello, ultraviolet!"
+---

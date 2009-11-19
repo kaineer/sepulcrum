@@ -3,6 +3,8 @@
 //
 
 $( document ).ready( function() {
+  align_sidebar();
+
   $.getJSON( "/list.json", function( data ) {
     $.each( data, function( i, elt ) {
       $('#content').tag('div', {class: 'span-18 last frame blog'}, function(t){
@@ -10,13 +12,21 @@ $( document ).ready( function() {
         h2.data( "filename", elt.filename );
         h2.data( "date", elt.date );
       } );
+
+      align_sidebar();
     } );
   } );
 
   function align_sidebar() {
-    $( '.sidebar .frame' ).css( 'height',
-      $( '#content' ).height() - 14
-    );
+    var $content_height =$( '#content' ).height() - 14;
+    var $hierarchy_height = $( '.sidebar .hierarchy' ).height();
+    var $sidebar_height = 
+      $content_height > $hierarchy_height ? $content_height : $hierarchy_height;
+
+    $( '.sidebar .frame' ).
+      css( 'height',
+	   $sidebar_height
+	 );
   }
 
   function hide_content() {
@@ -58,17 +68,29 @@ $( document ).ready( function() {
 
   } );
 
+  function toggle_elipsis( elt, condition ) {
+    if( condition ) {
+      elt.tag( "span", " ..." );
+    } else {
+      elt.find( "span" ).remove();
+    }
+  }
+
   $( ".hierarchy .title" ).click( function() {
     var $container = $( this ).next( ".container" );
 
-    if( $container && $container.length > 0 && $container.css( "display" ) != "none" ) {
-      $( this ).tag( "span", " ..." );
-    } else {
-      $( this ).find( "span" ).remove();
-    }
+    toggle_elipsis( $( this ),
+      $container && $container.length > 0 && 
+    	$container.css( "display" ) != "none" );
 
     $container.toggle();
 
+    align_sidebar();
+
     return false;
-  } );
+  } ).filter( function() { 
+    return $( this ).next( ".container" ).length > 0; 
+  } ).addClass( "expandable" );
+
+  $( ".hierarchy > .title" ).click();
 } );

@@ -1,7 +1,6 @@
 .hierarchy .title {
     float: left;
     clear: left;
-    /* background-color: #92A5D2; */
     color: #92A5D2;
     padding-right: 4px;
 }
@@ -14,4 +13,9 @@
 }
 .container .container {
     margin-left: 8px;
+}
+
+.hierarchy .expandable {
+    cursor: pointer;
+    color: #3d5182;
 }

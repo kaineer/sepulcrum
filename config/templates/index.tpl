@@ -13,6 +13,7 @@
 
     %link{:rel=>'stylesheet', :href=>'/stylesheets/screen.css', :type=>'text/css'}
     %link{:rel=>'stylesheet', :href=>'/stylesheets/hierarchy.css', :type=>'text/css'}
+    %link{:rel=>'stylesheet', :href=>'/stylesheets/ultraviolet/active4d.css', :type=>'text/css'}
 
     %script{:src=>'/javascripts/jquery.js'}
     %script{:src=>'/javascripts/jquery.ream.utils.js'}
@@ -25,7 +26,8 @@
         .span-18.top-bottom-margin#content
         .span-6.last.top-bottom-margin.sidebar
           .last.frame
-            \{about:me}
+            .hierarchy
+              \{about:me}
       .span-24.footer.last
         .frame
           %h2 Слон полосатый, большой..

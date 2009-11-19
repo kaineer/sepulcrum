@@ -10,9 +10,9 @@ module TemplateProcessor
     GLUE = $/
 
     def self.divs( doc )
-      div( 'hierarchy' ) do
+      # div( 'hierarchy' ) do
         divs0( doc )
-      end
+      # end
     end
 
     def self.div( name, &block )
