@@ -1,0 +1,41 @@
+--- yaml:parameters
+title: "Протяжный скрип защитных механизмов"
+date: 2009.11.20
+--- yaml:environment
+tags: [ruby]
+templates: [empty]
+--- haml:page:content
+%p Опыт вползает в голову медленно, но неумолимо.
+%p Было:
+{source.was}
+%p.continue стало:
+{source.became}
+%p 
+  Короче и понятнее, вроде. 
+  Напрягает только количество времени 
+  между написанием исходного кода и читабельного.
+--- ruby:source.was
+def self.unlink_subtree( lab_id )
+  ancestors = self.ancestors( lab_id, false )
+  subtree   = self.subtree( lab_id, true )
+
+  return if ancestors.empty?
+
+  conditions = "#{table_name}.from_id IN (" +
+    subtree.map{|l|l.from_id.to_s} * "," +
+    ") AND #{table_name}.to_id IN (" +
+    ancestors.map{|l|l.to_id.to_s} * "," + ")"
+
+  self.find( :all, :conditions => conditions ).each{|l|l.destroy}
+end
+--- ruby:source.became
+def self.unlink_subtree( lab_id )
+  ancestors = self.ancestors( lab_id, false )
+  subtree   = self.subtree( lab_id, true )
+
+  self.find( :all, :conditions => {
+                :from_id => subtree.map( &:from_id ),
+                :to_id => ancestors.map( &:to_id )
+              } ).each{|ll|ll.destroy}
+end
+---

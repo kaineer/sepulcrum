@@ -81,6 +81,10 @@ p {
     text-indent: 8px;
 }
 
+p.continue {
+    text-indent: 0px;
+}
+
 pre {
     margin: 4px 4px;
     font: 10pt Georgia, Serif;
