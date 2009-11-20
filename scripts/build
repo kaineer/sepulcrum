@@ -69,6 +69,10 @@ module Sepulcrum
       @templates ||= cache( "templates.source" )
     end
 
+
+    # smth like cache( pages_hash )
+    # then take several tranformations from this hash
+    #
     def pages
       @pages ||= cache( "pages.source" )
     end
