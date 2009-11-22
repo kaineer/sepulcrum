@@ -1,0 +1,12 @@
+#!/usr/bin/ruby
+
+def link( target, name )
+  system( "ln -s #{target} #{name}" )
+end
+
+%w( stylesheets javascripts images ).each do |dir|
+  target = File.expand_path( [ "public", dir ] * "/" )
+  name   = [ "site", dir ] * "/"
+
+  link( target, name )
+end
