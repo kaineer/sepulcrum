@@ -7,11 +7,16 @@ require 'rubygems'
 require 'yaml'
 require "scripts/lib/utils"
 
+require 'ream/blog/sources'
+require 'ream/blog/transformations'
+
+require 'ream/blog/configuration'
+
 require 'ream/sources/fs'
 require 'ream/blog/template_cache'
 require 'ream/blog/template_processor'
+require 'ream/blog/template_processor/defaults'
 require 'ream/blog/overrides/string'
-require 'ream/blog/overrides/hash'
 
 require 'ream/onion'
 
@@ -35,28 +40,6 @@ end
 
 module Sepulcrum
   class Build
-    
-    class SourceHash
-      def initialize( obj )
-        case obj
-        when Hash then init_with_hash( obj )
-        when String then init_with_hash( YAML.load( obj ) )
-        end
-      end
-
-      def init_with_hash( hash )
-        @root = hash[ "root" ]
-        @mask = hash[ "mask" ]
-        @map  = hash[ "map" ]
-      end
-
-      attr_reader :root, :mask, :map
-
-      def wildcard
-        File.join( root, mask )
-      end
-    end
-
 
     include Utils::Log
 
@@ -69,91 +52,78 @@ module Sepulcrum
       @templates ||= cache( "templates.source" )
     end
 
-
-    # smth like cache( pages_hash )
-    # then take several tranformations from this hash
-    #
-    def pages
-      @pages ||= cache( "pages.source" )
-    end
-
-    def build_pages
-      self.pages.each do |path, value|
-        build_page( path, value )
+    def make_transformations
+      transformations.each do |transformation|
+        info( "Starting transformation.." )
+        transformation.sources.each do |source_name|
+          transform_source( transformation, cache( source_name ) )
+        end
+        info( ".. done transformation." )
       end
     end
 
-    def build_page( path, value )
-      environment = value[ "environment" ]
-      parameters  = value[ "parameters" ]
-      parameters  = {} unless parameters.is_a?( Hash )
+    def transform_source( transformation, source )
+      source.each do |path, value|
+        dst_path = path.path.map( transformation.file_map )
 
-      layout_templates = environment[ "templates" ]
+        environment = value[ "environment" ]
 
-      layout = templates.fetch( layout_templates )
+        parameters = value[ "parameters" ]
+        parameters = {} unless parameters.is_a?( Hash )
+        
+        layout_templates = transformation.templates | ( environment[ "templates" ] || [] )
 
-      params = Ream::Onion.new
-      params << { "page:content" => value[ "page:content", TemplateParameter ] }
-      params << parameters
+        layout = templates.fetch( layout_templates )
 
-      content = layout[ "html:page", params ]
+        if ( File.mtime( dst_path ) < [ layout.mtime, value.mtime ].max )
+          info( "  Transforming path #{path} -> #{dst_path}.." )
 
-      dir_map  = "site/#{(environment[ 'map' ][ 'dir' ] rescue nil ) || '%p'}"
-      file_map = "#{dir_map}/#{(environment[ 'map' ][ 'filename' ] rescue nil ) || '%n.html'}"
+          params = Ream::Onion.new
+          params << { "page:content" => value[ "page:content", TemplateParameter ], "page:path" => path }
+          params << parameters
 
-      dir = path.path.map( dir_map )
-      FileUtils.mkdir_p( dir )
+          content = layout[ "html:page", params ]
 
-      out_file = path.path.map( file_map )
-      debug( "#{path} -> #{out_file}" )
+          FileUtils.mkdir_p( path.path.map( transformation.dir_map ) )
 
-      File.open( out_file, "w" ) { |f|
-        f.write( content )
-      }
+          File.open( dst_path, "w" ) do |f|
+            f.write( content )
+          end
+        end
+      end
     end
 
   protected
 
-    def sources_config
-      @sources_config ||= Ream::Template.scan( "config/sources.tpl" )
-    end
-
-    def processors_mask
-      SourceHash.
-        new( sources_config[ "yaml:processors.source" ] ).wildcard
+    def sources
+      @sources ||= Ream::Blog::Sources.new
     end
 
     def load_template_processors
       info( "load_template_processors" )
 
-      Dir[ processors_mask ].each do |filename|
+      Dir[ Ream::Blog::Configuration.processors ].each do |filename|
         debug( "Template processor: #{filename}" )
         require filename unless File.directory?( filename )
       end
     end
 
     def load_common_parameters
+      info( "load_common_parameters" )
       Dir[ "config/parameters/**.rb" ].each {|fn| require fn}
     end
 
-    def expanded_sources_config
-      @expanded_sources_config ||= 
-        sources_config.with( Ream::Blog::TemplateProcessor )
+    def cache( sources_name )
+      Ream::Blog::TemplateCache.new( sources[ sources_name ] )
     end
 
-    def source( template_name )
-      hash = SourceHash.
-        new( expanded_sources_config[ template_name ] )
-      Ream::Sources::FS.new( hash.root, hash.mask )
-    end
-
-    def cache( template_name )
-      Ream::Blog::TemplateCache.new( source( template_name ) )
+    def transformations
+      @transformations ||= Ream::Blog::Transformations.new.transformations
     end
   end
 end
 
 sb = Sepulcrum::Build.new
-sb.build_pages
+sb.make_transformations
 
 debug( 'ok.' )

@@ -3,7 +3,6 @@ title: "Протяжный скрип защитных механизмов"
 date: 2009.11.20
 --- yaml:environment
 tags: [ruby]
-templates: [empty]
 --- haml:page:content
 %p Опыт вползает в голову медленно, но неумолимо.
 %p Было:

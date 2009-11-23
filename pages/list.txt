@@ -1,7 +1,3 @@
---- yaml:environment
-map:
-  filename: "%n.json"
-templates: [ json ]
 --- page:content
 [
 %json.file.list%

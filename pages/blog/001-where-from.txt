@@ -1,5 +1,4 @@
 --- yaml:environment
-templates: [empty]
 tags: text
 --- yaml:parameters
 title: "Что откуда берётся"

@@ -1,6 +1,5 @@
 --- yaml:environment
 tags: text
-templates: [empty]
 --- yaml:parameters
 title: Холодно
 date: 2009.11.17

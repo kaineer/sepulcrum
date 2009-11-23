@@ -1,6 +1,5 @@
 --- yaml:environment
 tags: text
-templates: [empty]
 --- yaml:parameters
 title: "И, кагбэ, рановато мне стреляться.."
 date: 2009.11.18

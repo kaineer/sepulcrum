@@ -3,7 +3,6 @@ title: "Привет, ультрафиолет"
 date: 2009.11.19
 --- yaml:environment
 tags: [hello]
-templates: [empty]
 --- haml:page:content
 %p
   <a href="http://ultraviolet.rubyforge.org">Ultraviolet</a> - 
