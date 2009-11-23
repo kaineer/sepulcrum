@@ -14,7 +14,7 @@
   templates: [ index, sidebar ]
   sources: [ index.source ]
 
-#
+# json list
 #
 - map:
     dir: site/%p

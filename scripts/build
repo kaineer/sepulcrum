@@ -9,6 +9,7 @@ require "scripts/lib/utils"
 
 require 'ream/blog/sources'
 require 'ream/blog/transformations'
+require 'ream/blog/template_parameter'
 
 require 'ream/blog/configuration'
 
@@ -21,22 +22,6 @@ require 'ream/blog/overrides/string'
 require 'ream/onion'
 
 include Utils::Log
-
-
-module TemplateParameter
-  @@parameters = []
-
-  def self.[]( key )
-    klazz = has_key?( key )
-    klazz ? klazz.new( key ).value : nil
-  end
-
-  def self.has_key?( key )
-    @@parameters.find{|klazz|
-      klazz.matches?( key )
-    }
-  end
-end
 
 module Sepulcrum
   class Build
@@ -75,11 +60,11 @@ module Sepulcrum
 
         layout = templates.fetch( layout_templates )
 
-        if ( File.mtime( dst_path ) < [ layout.mtime, value.mtime ].max )
+        if !File.exist?( dst_path ) || ( File.mtime( dst_path ) < [ layout.mtime, value.mtime ].max )
           info( "  Transforming path #{path} -> #{dst_path}.." )
 
           params = Ream::Onion.new
-          params << { "page:content" => value[ "page:content", TemplateParameter ], "page:path" => path }
+          params << { "page:content" => value[ "page:content", template_parameters ], "page:path" => path }
           params << parameters
 
           content = layout[ "html:page", params ]
@@ -110,7 +95,11 @@ module Sepulcrum
 
     def load_common_parameters
       info( "load_common_parameters" )
-      Dir[ "config/parameters/**.rb" ].each {|fn| require fn}
+      Ream::Blog::TemplateParameter.load
+    end
+
+    def template_parameters
+      Ream::Blog::TemplateParameter
     end
 
     def cache( sources_name )

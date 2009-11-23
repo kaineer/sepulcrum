@@ -11,8 +11,8 @@ mask: "**/*.tpl"
 root: "pages"
 mask: "**/*.txt"
 --- yaml:blog.source
-root: "pages/blog"
-mask: "*.txt"
+root: "pages"
+mask: "blog/*.txt"
 --- yaml:index.source
 root: "pages"
 mask: "index.txt"
